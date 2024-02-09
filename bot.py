@@ -491,7 +491,7 @@ async def about_handler(c: Client, m: Message):
         reply_markup=InlineKeyboardMarkup(
             [
                 [
-			InlineKeyboardButton("👨‍💻 Dᴇᴠᴇʟᴏᴘᴇʀ", url="https://t.me/DevilServers"),
+			InlineKeyboardButton("👨‍💻 Dᴇᴠᴇʟᴏᴘᴇʀ", url="https://t.me/nordbotz"),
 		        InlineKeyboardButton("🤔 Dᴇᴘʟᴏʏᴇᴅ ʙʏ", url=f"https://t.me/{Config.OWNER_USERNAME}")
 		],
                 [
@@ -747,7 +747,7 @@ if __name__ == "__main__":
         with userBot:
             userBot.send_message(
                 chat_id=int(LOGCHANNEL),
-                text="Bᴏᴛ ʙᴏᴏᴛᴇᴅ ᴡɪᴛʜ ᴘʀᴇᴍɪᴜᴍ ᴀᴄᴄᴏᴜɴᴛ,\n\n  Tʜᴀɴᴋs ғᴏʀ ᴜsɪɴɢ <a href='https://t.me/Devilservers'>ᴛʜɪs ʀᴇᴘᴏ</a>",
+                text="Bᴏᴛ ʙᴏᴏᴛᴇᴅ ᴡɪᴛʜ ᴘʀᴇᴍɪᴜᴍ ᴀᴄᴄᴏᴜɴᴛ,\n\n  Tʜᴀɴᴋs ғᴏʀ ᴜsɪɴɢ <a href='https://t.me/Nordbotz'>ᴛʜɪs ʀᴇᴘᴏ</a>",
                 disable_web_page_preview=True,
             )
             user = userBot.get_me()
