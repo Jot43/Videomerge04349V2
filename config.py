@@ -16,7 +16,7 @@ class Config(object):
     USER_SESSION_STRING = os.environ.get("USER_SESSION_STRING", None)
     IS_PREMIUM = True
     MODES = ["video-video", "video-audio", "video-subtitle","extract-streams"]
-    UPSTREAM_REPO = "https://github.com/Darkksoul/Videomerge"
+    UPSTREAM_REPO = "https://github.com/Jot43/Videomerge04349/"
     UPSTREAM_BRANCH = "main"
 
     START_TEXT = """
