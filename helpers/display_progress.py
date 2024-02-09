@@ -50,7 +50,7 @@ class Progress:
             [
                 [
                     InlineKeyboardButton(
-                        "⛔ Cᴀɴᴄᴇʟ ⛔",
+                        "⛔ Cᴀɴᴄᴇʟ ⛔ @𝑵𝒐𝒓𝒅𝑩𝒐𝒕𝒛",
                         callback_data=(
                             f"gUPcancel/{chat_id}/{mes_id}/{from_user}"
                         ).encode("UTF-8"),
