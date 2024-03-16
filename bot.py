@@ -213,182 +213,11 @@ async def start_handler(c: Client, m: Message):
 
 @mergeApp.on_message(
     (filters.document | filters.video | filters.audio) & filters.private
-)
-async def files_handler(c: Client, m: Message):
-    Fsub = await ForceSub(c, m)
-    if Fsub == 400:
-        return
-    user_id = m.from_user.id
-    user = UserSettings(user_id, m.from_user.first_name)
-    if user.merge_mode == 4: # extract_mode
-        return
-    input_ = f"downloads/{str(user_id)}/input.txt"
-    if os.path.exists(input_):
-        await m.reply_text("Sᴏʀʀʏ ʙʀᴏ,\nAʟʀᴇᴀᴅʏ ᴏɴᴇ ᴘʀᴏᴄᴇss ɪɴ ᴘʀᴏɢʀᴇss!\nDᴏɴ'ᴛ sᴘᴀᴍ.")
-        return
-    media = m.video or m.document or m.audio
-    if media.file_name is None:
-        await m.reply_text("File Not Found")
-        return
-    currentFileNameExt = media.file_name.rsplit(sep=".")[-1].lower()
-    if currentFileNameExt in "conf":
-        await m.reply_text(
-            text="**💾 Cᴏɴғɪɢ ғɪʟᴇ ғᴏᴜɴᴅ, Dᴏ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ sᴀᴠᴇ ɪᴛ?**",
-            reply_markup=InlineKeyboardMarkup(
-                [
-                    [
-                        InlineKeyboardButton("✅ Yᴇs", callback_data=f"rclone_save"),
-                        InlineKeyboardButton("❌ Nᴏ", callback_data="rclone_discard"),
-                    ]
-                ]
-            ),
-            quote=True,
-        )
-        return
-    # if MERGE_MODE.get(user_id) is None:
-    #     userMergeMode = database.getUserMergeSettings(user_id)
-    #     if userMergeMode is not None:
-    #         MERGE_MODE[user_id] = userMergeMode
-    #     else:
-    #         database.setUserMergeMode(uid=user_id, mode=1)
-    #         MERGE_MODE[user_id] = 1
-
-    if user.merge_mode == 1:
-
-        if queueDB.get(user_id, None) is None:
-            formatDB.update({user_id: currentFileNameExt})
-        if formatDB.get(
-            user_id, None
-        ) is not None and currentFileNameExt != formatDB.get(user_id):
-            await m.reply_text(
-                f"Fɪʀsᴛ ʏᴏᴜ sᴇɴᴛ ᴀ {formatDB.get(user_id).upper()} ғɪʟᴇ sᴏ ɴᴏᴡ sᴇɴᴅ ᴏɴʟʏ ᴛʜᴀᴛ ᴛʏᴘᴇ ᴏғ ғɪʟᴇ.",
-                quote=True,
-            )
-            return
-        if currentFileNameExt not in VIDEO_EXTENSIONS:
-            await m.reply_text(
-                "Tʜɪs ᴠɪᴅᴇᴏ ғᴏʀᴍᴀᴛ ɴᴏᴛ ᴀʟʟᴏᴡᴇᴅ!\nOɴʟʏ sᴇɴᴅ MP4 ᴏʀ MKV ᴏʀ WEBM.",
-                quote=True,
-            )
-            return
-        editable = await m.reply_text("Pʟᴇᴀsᴇ ᴡᴀɪᴛ ...", quote=True)
-        MessageText = "Oᴋᴀʏ,\nNᴏᴡ sᴇɴᴅ ᴍᴇ ɴᴇxᴛ ᴠɪᴅᴇᴏ ᴏʀ ᴘʀᴇss **Merge Now** ʙᴜᴛᴛᴏɴ!"
-
-        if queueDB.get(user_id, None) is None:
-            queueDB.update({user_id: {"videos": [], "subtitles": [], "audios": []}})
-        if (
-            len(queueDB.get(user_id)["videos"]) >= 0
-            and len(queueDB.get(user_id)["videos"]) < 20
-        ):
-            queueDB.get(user_id)["videos"].append(m.id)
-            queueDB.get(m.from_user.id)["subtitles"].append(None)
-
-            # LOGGER.info(
-            #     queueDB.get(user_id)["videos"], queueDB.get(m.from_user.id)["subtitles"]
-            # )
-
-            if len(queueDB.get(user_id)["videos"]) == 1:
-                reply_ = await editable.edit(
-                    "**Sᴇɴᴅ ᴍᴇ sᴏᴍᴇ ᴍᴏʀᴇ ᴠɪᴅᴇᴏs ᴛᴏ ᴍᴇʀɢᴇ ᴛʜᴇᴍ ɪɴᴛᴏ sɪɴɢʟᴇ ғɪʟᴇ**",
-                    reply_markup=InlineKeyboardMarkup(
-                        bMaker.makebuttons(["Cᴀɴᴄᴇʟ"], ["cancel"])
-                    ),
-                )
-                replyDB.update({user_id: reply_.id})
-                return
-            if queueDB.get(user_id, None)["videos"] is None:
-                formatDB.update({user_id: currentFileNameExt})
-            if replyDB.get(user_id, None) is not None:
-                await c.delete_messages(
-                    chat_id=m.chat.id, message_ids=replyDB.get(user_id)
-                )
-            if len(queueDB.get(user_id)["videos"]) == 20:
-                MessageText = "Oᴋᴀʏ, ɴᴏᴡ ᴊᴜsᴛ ᴘʀᴇss **Merge Now** ʙᴜᴛᴛᴏɴ ᴘʟᴏx!"
-            markup = await makeButtons(c, m, queueDB)
-            reply_ = await editable.edit(
-                text=MessageText, reply_markup=InlineKeyboardMarkup(markup)
-            )
-            replyDB.update({user_id: reply_.id})
-        elif len(queueDB.get(user_id)["videos"]) > 20:
-            markup = await makeButtons(c, m, queueDB)
-            await editable.text(
-                "Mᴀx 𝟷𝟶 ᴠɪᴅᴇᴏs ᴀʟʟᴏᴡᴇᴅ", reply_markup=InlineKeyboardMarkup(markup)
-            )
-
-    elif user.merge_mode == 2:
-        editable = await m.reply_text("Pʟᴇᴀsᴇ ᴡᴀɪᴛ ...", quote=True)
-        MessageText = (
-            "Oᴋᴀʏ,\nNᴏᴡ sᴇɴᴅ ᴍᴇ sᴏᴍᴇ ᴍᴏʀᴇ <u>Audios</u> ᴏʀ ᴘʀᴇss **Merge Now** ʙᴜᴛᴛᴏɴ!"
-        )
-
-        if queueDB.get(user_id, None) is None:
-            queueDB.update({user_id: {"videos": [], "subtitles": [], "audios": []}})
-        if len(queueDB.get(user_id)["videos"]) == 0:
-            queueDB.get(user_id)["videos"].append(m.id)
-            # if len(queueDB.get(user_id)["videos"])==1:
-            reply_ = await editable.edit(
-                text="Nᴏᴡ, sᴇɴᴅ ᴀʟʟ ᴛʜᴇ ᴀᴜᴅɪᴏs ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴍᴇʀɢᴇ",
-                reply_markup=InlineKeyboardMarkup(
-                    bMaker.makebuttons(["Cᴀɴᴄᴇʟ"], ["cancel"])
-                ),
-            )
-            replyDB.update({user_id: reply_.id})
-            return
-        elif (
-            len(queueDB.get(user_id)["videos"]) >= 1
-            and currentFileNameExt in AUDIO_EXTENSIONS
-        ):
-            queueDB.get(user_id)["audios"].append(m.id)
-            if replyDB.get(user_id, None) is not None:
-                await c.delete_messages(
-                    chat_id=m.chat.id, message_ids=replyDB.get(user_id)
-                )
-            markup = await makeButtons(c, m, queueDB)
-
-            reply_ = await editable.edit(
-                text=MessageText, reply_markup=InlineKeyboardMarkup(markup)
-            )
-            replyDB.update({user_id: reply_.id})
-        else:
-            await m.reply("Tʜɪs ғɪʟᴇᴛʏᴘᴇ ɪs ɴᴏᴛ ᴠᴀʟɪᴅ")
-            return
-
-    elif user.merge_mode == 3:
-
-        editable = await m.reply_text("Pʟᴇᴀsᴇ ᴡᴀɪᴛ ...", quote=True)
-        MessageText = "Oᴋᴀʏ,\nNᴏᴡ sᴇɴᴅ ᴍᴇ sᴏᴍᴇ ᴍᴏʀᴇ <u>Subtitles</u> ᴏʀ ᴘʀᴇss **Merge Now** ʙᴜᴛᴛᴏɴ!"
-        if queueDB.get(user_id, None) is None:
-            queueDB.update({user_id: {"videos": [], "subtitles": [], "audios": []}})
-        if len(queueDB.get(user_id)["videos"]) == 0:
-            queueDB.get(user_id)["videos"].append(m.id)
-            # if len(queueDB.get(user_id)["videos"])==1:
-            reply_ = await editable.edit(
-                text="Nᴏᴡ, sᴇɴᴅ ᴀʟʟ ᴛʜᴇ sᴜʙᴛɪᴛʟᴇs ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴍᴇʀɢᴇ",
-                reply_markup=InlineKeyboardMarkup(
-                    bMaker.makebuttons(["Cᴀɴᴄᴇʟ"], ["cancel"])
-                ),
-            )
-            replyDB.update({user_id: reply_.id})
-            return
-        elif (
-            len(queueDB.get(user_id)["videos"]) >= 1
-            and currentFileNameExt in SUBTITLE_EXTENSIONS
-        ):
-            queueDB.get(user_id)["subtitles"].append(m.id)
-            if replyDB.get(user_id, None) is not None:
-                await c.delete_messages(
-                    chat_id=m.chat.id, message_ids=replyDB.get(user_id)
-                )
-            markup = await makeButtons(c, m, queueDB)
-
-            reply_ = await editable.edit(
-                text=MessageText, reply_markup=InlineKeyboardMarkup(markup)
-            )
-            replyDB.update({user_id: reply_.id})
-        else:
-            await m.reply("Tʜɪs ғɪʟᴇᴛʏᴘᴇ ɪs ɴᴏᴛ ᴠᴀʟɪᴅ")
-            return
-
+)	
+        reply_markup=InlineKeyboardMarkup(
+            [[InlineKeyboardButton("Cʟᴏsᴇ 🔐", callback_data="close")]]
+        ),
+    )
 
 @mergeApp.on_message(filters.photo & filters.private)
 async def photo_handler(c: Client, m: Message):
@@ -481,7 +310,7 @@ async def about_handler(c: Client, m: Message):
 👨‍💻 Mᴇʀɢᴇᴅ ᴠɪᴅᴇᴏ ᴘʀᴇsᴇʀᴠᴇs ᴀʟʟ sᴛʀᴇᴀᴍs ᴏғ ᴛʜᴇ ғɪʀsᴛ ᴠɪᴅᴇᴏ ʏᴏᴜ sᴇɴᴅ (ɪ.ᴇ ᴀʟʟ ᴀᴜᴅɪᴏᴛʀᴀᴄᴋs/sᴜʙᴛɪᴛʟᴇs)
 ➖➖➖➖➖➖➖➖➖➖➖➖➖
 **Fᴇᴀᴛᴜʀᴇs**
-🔰 Mᴇʀɢᴇ ᴜᴘᴛᴏ 𝟷𝟶 ᴠɪᴅᴇᴏ ɪɴ ᴏɴᴇ 
+🔰 Mᴇʀɢᴇ ᴜᴘᴛᴏ 2𝟶 ᴠɪᴅᴇᴏ ɪɴ ᴏɴᴇ 
 🔰 Uᴘʟᴏᴀᴅ ᴀs ᴅᴏᴄᴜᴍᴇɴᴛs/ᴠɪᴅᴇᴏ
 🔰 Cᴜsᴛᴏᴍs ᴛʜᴜᴍʙɴᴀɪʟ sᴜᴘᴘᴏʀᴛ
 🔰 Usᴇʀs ᴄᴀɴ ʟᴏɢɪɴ ᴛᴏ ʙᴏᴛ ᴜsɪɴɢ ᴘᴀssᴡᴏʀᴅ
@@ -675,7 +504,7 @@ async def makeButtons(c: Client, m: Message, db: dict):
         )
         msgs.insert(
             0,
-            await bot.get_messages(
+            await c.get_messages(
                 chat_id=m.chat.id, message_ids=db.get(m.chat.id)["videos"][0]
             ),
         )
@@ -691,7 +520,7 @@ async def makeButtons(c: Client, m: Message, db: dict):
                             callback_data=f"tryotherbutton",
                         )
                     ]
-		)
+                )
 
     elif user.merge_mode == 3:
         msgs: list[Message] = await c.get_messages(
@@ -718,7 +547,7 @@ async def makeButtons(c: Client, m: Message, db: dict):
                     ]
                 )
 
-    markup.append([InlineKeyboardButton("🗂 Mᴇʀɢᴇ ɴᴏᴡ", callback_data="merge")])
+    markup.append([InlineKeyboardButton("🗂 Mᴇʀɢᴇ ɴᴏᴡ @𝑵𝒐𝒓𝒅𝑩𝒐𝒕𝒛 ", callback_data="merge")])
     markup.append([InlineKeyboardButton("🚫 Cʟᴇᴀʀ ғɪʟᴇs", callback_data="cancel")])
     return markup
 
@@ -727,6 +556,7 @@ LOGCHANNEL = Config.LOGCHANNEL
 try:
     if Config.USER_SESSION_STRING is None:
         raise KeyError
+
     LOGGER.info("Starting USER Session")
     userBot = Client(
         name="merge-bot-user",
@@ -736,7 +566,8 @@ try:
 
 except KeyError:
     userBot = None
-    LOGGER.warning("Nᴏ ᴜsᴇʀ sᴇssɪᴏɴ, Dᴇғᴀᴜʟᴛ ʙᴏᴛ sᴇssɪᴏɴ ᴡɪʟʟ ʙᴇ ᴜsᴇᴅ")
+    LOGGER.warning("No User Session, Default Bot session will be used")
+
 
 
 if __name__ == "__main__":
@@ -747,7 +578,7 @@ if __name__ == "__main__":
         with userBot:
             userBot.send_message(
                 chat_id=int(LOGCHANNEL),
-                text="Bᴏᴛ ʙᴏᴏᴛᴇᴅ ᴡɪᴛʜ ᴘʀᴇᴍɪᴜᴍ ᴀᴄᴄᴏᴜɴᴛ,\n\n  Tʜᴀɴᴋs ғᴏʀ ᴜsɪɴɢ <a href='https://t.me/Nordbotz'>ᴛʜɪs ʀᴇᴘᴏ</a>",
+                text="Bᴏᴛ ʙᴏᴏᴛᴇᴅ ᴡɪᴛʜ ᴘʀᴇᴍɪᴜᴍ ᴀᴄᴄᴏᴜɴᴛ,\n\n  Tʜᴀɴᴋs ғᴏʀ ᴜsɪɴɢ <a href='https://t.me/NordBotz'>ᴛʜɪs ʀᴇᴘᴏ</a>",
                 disable_web_page_preview=True,
             )
             user = userBot.get_me()
