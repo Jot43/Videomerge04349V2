@@ -671,7 +671,7 @@ async def makeButtons(c: Client, m: Message, db: dict):
                 )
 
     elif user.merge_mode == 2:
-        msgs: list[Message] = await bot.get_messages(
+        msgs: list[Message] = await c.get_messages(
             chat_id=m.chat.id, message_ids=db.get(m.chat.id)["audios"]
         )
         msgs.insert(
