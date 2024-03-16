@@ -675,7 +675,7 @@ async def makeButtons(c: Client, m: Message, db: dict):
         )
         msgs.insert(
             0,
-            await c.get_messages(
+            await bot.get_messages(
                 chat_id=m.chat.id, message_ids=db.get(m.chat.id)["videos"][0]
             ),
         )
@@ -691,7 +691,7 @@ async def makeButtons(c: Client, m: Message, db: dict):
                             callback_data=f"tryotherbutton",
                         )
                     ]
-                )
+		)
 
     elif user.merge_mode == 3:
         msgs: list[Message] = await c.get_messages(
