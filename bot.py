@@ -278,7 +278,7 @@ async def files_handler(c: Client, m: Message):
             queueDB.update({user_id: {"videos": [], "subtitles": [], "audios": []}})
         if (
             len(queueDB.get(user_id)["videos"]) >= 0
-            and len(queueDB.get(user_id)["videos"]) < 10
+            and len(queueDB.get(user_id)["videos"]) < 15
         ):
             queueDB.get(user_id)["videos"].append(m.id)
             queueDB.get(m.from_user.id)["subtitles"].append(None)
@@ -302,14 +302,14 @@ async def files_handler(c: Client, m: Message):
                 await c.delete_messages(
                     chat_id=m.chat.id, message_ids=replyDB.get(user_id)
                 )
-            if len(queueDB.get(user_id)["videos"]) == 10:
+            if len(queueDB.get(user_id)["videos"]) == 15:
                 MessageText = "Oᴋᴀʏ, ɴᴏᴡ ᴊᴜsᴛ ᴘʀᴇss **Merge Now** ʙᴜᴛᴛᴏɴ ᴘʟᴏx!"
             markup = await makeButtons(c, m, queueDB)
             reply_ = await editable.edit(
                 text=MessageText, reply_markup=InlineKeyboardMarkup(markup)
             )
             replyDB.update({user_id: reply_.id})
-        elif len(queueDB.get(user_id)["videos"]) > 10:
+        elif len(queueDB.get(user_id)["videos"]) > 15:
             markup = await makeButtons(c, m, queueDB)
             await editable.text(
                 "Mᴀx 𝟷𝟶 ᴠɪᴅᴇᴏs ᴀʟʟᴏᴡᴇᴅ", reply_markup=InlineKeyboardMarkup(markup)
