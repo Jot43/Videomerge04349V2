@@ -543,16 +543,8 @@ async def show_thumbnail(c: Client, m: Message):
 	    
 @mergeApp.on_message(filters.command(["cancel"]) & filters.private)
 async def cancel_handler(c: Client, m: Message):
-    Fsub = await ForceSub(c, m)
-    if Fsub == 400:
-        return
-    await m.reply_text(
-        text="""**Click To Cancel Button [@NordBotz]**""",
-        quote=True,
-        reply_markup=InlineKeyboardMarkup(
-            [[InlineKeyboardButton("Click To Cancel ❌", callback_data="cancel")]]
-        ),
-    )
+    await m.reply_text(Try To Cancel="callback_data="cancel")
+    return
 
 
 @mergeApp.on_message(filters.command(["deletethumbnail"]) & filters.private)
