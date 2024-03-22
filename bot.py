@@ -467,6 +467,21 @@ async def help_msg(c: Client, m: Message):
 
 
 @mergeApp.on_message(filters.command(["about"]) & filters.private)
+async def cancel_msg(c: Client, m: Message):
+    Fsub = await ForceSub(c, m)
+    if Fsub == 400:
+        return
+    await m.reply_text(
+        text="""**Click To Cancel Button But Not Reply Bot Check You Manually
+1)**""",
+        quote=True,
+        reply_markup=InlineKeyboardMarkup(
+            [[InlineKeyboardButton("Click To Cancel ❌", callback_data="cancel")]]
+        ),
+    )
+
+
+@mergeApp.on_message(filters.command(["cancel"]) & filters.private)
 async def about_handler(c: Client, m: Message):
     Fsub = await ForceSub(c, m)
     if Fsub == 400:
