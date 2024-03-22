@@ -481,6 +481,7 @@ async def cancel_handler(c: Client, m: Message):
 
 
 @mergeApp.on_message(filters.command(["cancel"]) & filters.private)
+
 async def about_handler(c: Client, m: Message):
     Fsub = await ForceSub(c, m)
     if Fsub == 400:
