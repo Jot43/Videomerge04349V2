@@ -505,20 +505,6 @@ async def about_handler(c: Client, m: Message):
 @mergeApp.on_message(
     filters.command(["savethumb", "setthumb", "savethumbnail"]) & filters.private
 )
-async def cancel_handler(c: Client, m: Message):
-    Fsub = await ForceSub(c, m)
-    if Fsub == 400:
-        return
-    await m.reply_text(
-        text="""**Click To Cancel Button But Not Reply Bot Check You Manually**""",
-        quote=True,
-        reply_markup=InlineKeyboardMarkup(
-            [[InlineKeyboardButton("Click To Cancel ❌", callback_data="cancel")]]
-        ),
-    )
-
-
-@mergeApp.on_message(filters.command(["cancel"]) & filters.private)
 async def save_thumbnail(c: Client, m: Message):
     Fsub = await ForceSub(c, m)
     if Fsub == 400:
@@ -660,7 +646,21 @@ async def delete_all(root):
 
 
 
-	    
+
+async def cancel_handler(c: Client, m: Message):
+    Fsub = await ForceSub(c, m)
+    if Fsub == 400:
+        return
+    await m.reply_text(
+        text="""**Click To Cancel Button But Not Reply Bot Check You Manually**""",
+        quote=True,
+        reply_markup=InlineKeyboardMarkup(
+            [[InlineKeyboardButton("Click To Cancel ❌", callback_data="cancel")]]
+        ),
+    )
+
+
+@mergeApp.on_message(filters.command(["cancel"]) & filters.private)	    
 async def makeButtons(c: Client, m: Message, db: dict):
     Fsub = await ForceSub(c, m)
     if Fsub == 400:
