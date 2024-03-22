@@ -546,7 +546,7 @@ async def cancel_handler(c: Client, m: Message):
     Fsub = await ForceSub(c, m)
     if Fsub == 400:
         return
-    await self.Cancel=f'cancel',
+    await self.Cancel [f'cancel','cancel']
         quote=True
 	    )
 @mergeApp.on_message(filters.command(["deletethumbnail"]) & filters.private)
