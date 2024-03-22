@@ -543,10 +543,12 @@ async def show_thumbnail(c: Client, m: Message):
 	    
 @mergeApp.on_message(filters.command(["cancel"]) & filters.private)
 async def cancel_handler(c: Client, m: Message):
-    await m.reply_text(text="Try To Cancel"= callback_data="cancel")
-    return
-
-
+    Fsub = await ForceSub(c, m)
+    if Fsub == 400:
+        return
+    await self.Cancel = f'cancel',
+        quote=True
+	    )
 @mergeApp.on_message(filters.command(["deletethumbnail"]) & filters.private)
 async def delete_thumbnail(c: Client, m: Message):
     try:
