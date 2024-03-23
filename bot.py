@@ -197,7 +197,7 @@ async def broadcast_handler(c: Client, m: Message):
 
 
 @mergeApp.on_message(filters.command(["restart"]) & filters.user(Config.OWNER_USERNAME))
- async def start(self):
+ async def start_handler:(c: Client, m: Message):
         super().start()
         try:
             self.send_message(chat_id=int(Config.OWNER), text="<b>Bᴏᴛ sᴛᴀʀᴛᴇᴅ .!</b>")
