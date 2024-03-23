@@ -197,7 +197,7 @@ async def broadcast_handler(c: Client, m: Message):
 
 
 @mergeApp.on_message(filters.command(["restart"]) & filters.user(Config.OWNER_USERNAME))
-    def start(self):
+    def start(owner):
         super().start()
         try:
             self.send_message(chat_id=int(Config.OWNER), text="<b>Bᴏᴛ sᴛᴀʀᴛᴇᴅ .!</b>")
@@ -205,7 +205,7 @@ async def broadcast_handler(c: Client, m: Message):
             LOGGER.error("Bᴏᴏᴛ ᴀʟᴇʀᴛ ғᴀɪʟᴇᴅ! Pʟᴇᴀsᴇ sᴛᴀʀᴛ ʙᴏᴛ ɪɴ PM")
         return LOGGER.info("Bᴏᴛ Sᴛᴀʀᴛᴇᴅ!")
 
-    def stop(self):
+    def stop(owner):
         super().stop()
         return LOGGER.info("Bᴏᴛ Sᴛᴏᴘᴘᴇᴅ")
 	
