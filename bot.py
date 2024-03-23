@@ -541,13 +541,23 @@ async def show_thumbnail(c: Client, m: Message):
         LOGGER.info(err)
         await m.reply_text(text="❌ Cᴜsᴛᴏᴍ ᴛʜᴜᴍʙɴᴀɪʟ ɴᴏᴛ ғᴏᴜɴᴅ", quote=True)
 	    
+        await m.reply_text(text="❌ Cᴜsᴛᴏᴍ ᴛʜᴜᴍʙɴᴀɪʟ ɴᴏᴛ ғᴏᴜɴᴅ", quote=True)
+	    
 @mergeApp.on_message(filters.command(["cancel"]) & filters.private)
 async def cancel_handler(c: Client, m: Message):
     Fsub = await ForceSub(c, m)
     if Fsub == 400:
         return
-    await self.Cancel [f'cancel','cancel']
-	    
+    await m.reply_text(
+        text="""**Click To Cancel Button 
+Note:- You're Task Cancelled But Not Closed Download/Upload Status [@NordBotz]**""",
+        quote=True,
+        reply_markup=InlineKeyboardMarkup(
+            [[InlineKeyboardButton("Click To Cancel ❌", callback_data="cancel")]]
+        ),
+    )
+
+
 @mergeApp.on_message(filters.command(["deletethumbnail"]) & filters.private)
 async def delete_thumbnail(c: Client, m: Message):
     try:
