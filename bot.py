@@ -196,12 +196,18 @@ async def broadcast_handler(c: Client, m: Message):
     )
 
 
-@Client.on_message(filters.command("restart") & filters.user(Config.OWNER_USERNAME))
-async def stop_button(bot, message):
-    msg = await m.reply_text(text="**🔄 𝙿𝚁𝙾𝙲𝙴𝚂𝚂𝙴𝚂 𝚂𝚃𝙾𝙿𝙴𝙳. 𝙱𝙾𝚃 𝙸𝚂 𝚁𝙴𝚂𝚃𝙰𝚁𝚃𝙸𝙽𝙶...**", chat_id=message.chat.id)       
-    await asyncio.sleep(3)
-    await msg.edit("**✅️ 𝙱𝙾𝚃 𝙸𝚂 𝚁𝙴𝚂𝚃𝙰𝚁𝚃𝙴𝙳. 𝙽𝙾𝚆 𝚈𝙾𝚄 𝙲𝙰𝙽 𝚄𝚂𝙴 𝙼𝙴**")
-    os.execl(sys.executable, sys.executable, *sys.argv)
+@mergeApp.on_message(filters.command(["restart"]) & filters.user(Config.OWNER_USERNAME))
+    def start(self):
+        super().start()
+        try:
+            self.send_message(chat_id=int(Config.OWNER), text="<b>Bᴏᴛ sᴛᴀʀᴛᴇᴅ .!</b>")
+        except Exception as err:
+            LOGGER.error("Bᴏᴏᴛ ᴀʟᴇʀᴛ ғᴀɪʟᴇᴅ! Pʟᴇᴀsᴇ sᴛᴀʀᴛ ʙᴏᴛ ɪɴ PM")
+        return LOGGER.info("Bᴏᴛ Sᴛᴀʀᴛᴇᴅ!")
+
+    def stop(self):
+        super().stop()
+        return LOGGER.info("Bᴏᴛ Sᴛᴏᴘᴘᴇᴅ")
 	
 @mergeApp.on_message(filters.command(["start"]) & filters.private)
 async def start_handler(c: Client, m: Message):
