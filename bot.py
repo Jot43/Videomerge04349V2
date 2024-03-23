@@ -197,7 +197,7 @@ async def broadcast_handler(c: Client, m: Message):
 
 
 @mergeApp.on_message(filters.command(["restart"]) & filters.user(Config.OWNER_USERNAME))
-    def start(owner):
+ async def start(self):
         super().start()
         try:
             self.send_message(chat_id=int(Config.OWNER), text="<b>Bᴏᴛ sᴛᴀʀᴛᴇᴅ .!</b>")
@@ -205,9 +205,24 @@ async def broadcast_handler(c: Client, m: Message):
             LOGGER.error("Bᴏᴏᴛ ᴀʟᴇʀᴛ ғᴀɪʟᴇᴅ! Pʟᴇᴀsᴇ sᴛᴀʀᴛ ʙᴏᴛ ɪɴ PM")
         return LOGGER.info("Bᴏᴛ Sᴛᴀʀᴛᴇᴅ!")
 
-    def stop(owner):
+    def stop(self):
         super().stop()
         return LOGGER.info("Bᴏᴛ Sᴛᴏᴘᴘᴇᴅ")
+
+
+mergeApp = MergeBot(
+    name=Config.SESSION_NAME,
+    api_hash=Config.API_HASH,
+    api_id=int(Config.TELEGRAM_API),
+    bot_token=Config.BOT_TOKEN,
+    workers=300,
+    plugins=dict(root="plugins"),
+    app_version="5.0+yash-mergebot",
+)
+
+
+if os.path.exists("downloads") == False:
+    os.makedirs("downloads")
 	
 @mergeApp.on_message(filters.command(["start"]) & filters.private)
 async def start_handler(c: Client, m: Message):
