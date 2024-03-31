@@ -558,6 +558,20 @@ async def cancel_handler(c: Client, m: Message):
         await m.reply_text("Cancellation successful ❌", quote=True)
     else:
         await m.reply_text("No process to cancel.")
+@mergeApp.on_message(filters.command(["cancel"]) & filters.private)
+async def cancel_handler(c: Client, m: Message):
+    Fsub = await ForceSub(c, m)
+    if Fsub == 400:
+        return
+    await m.reply_text(
+        text="""**Click To Cancel Button 
+Note:- You're Task Cancelled But Not Closed Download/Upload Status [@i_manjot_sidhu]**""",
+        quote=True,
+        reply_markup=InlineKeyboardMarkup(
+            [[InlineKeyboardButton("Click To Cancel ❌", callback_data="cancel")]]
+        ),
+    )
+
 
 @mergeApp.on_message(filters.command(["deletethumbnail"]) & filters.private)
 async def delete_thumbnail(c: Client, m: Message):
