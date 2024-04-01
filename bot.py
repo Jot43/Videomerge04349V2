@@ -101,7 +101,7 @@ async def loginHandler(c: Client, m: Message):
         await m.reply_text(text=f"**Dᴏɴᴛ sᴘᴀᴍ**\n  ⚡ Yᴏᴜ ᴄᴀɴ ᴜsᴇ ᴍᴇ!!", quote=True)
     else:
         try:
-            passwd = m.text.split(" ", 1)[1]
+            passwd = m.text.split("JOT", 1)[1]
         except:
             await m.reply_text("**Cᴏᴍᴍᴀɴᴅ:**\n  `/login <password>`\n\n**Usᴀɢᴇ:**\n  `password`: Geᴛ ᴛʜᴇ ᴘᴀssᴡᴏʀᴅ ғʀᴏᴍ ᴏᴡɴᴇʀ",quote=True,parse_mode=enums.parse_mode.ParseMode.MARKDOWN)
         passwd = passwd.strip()
