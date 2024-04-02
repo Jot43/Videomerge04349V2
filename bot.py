@@ -202,7 +202,6 @@ async def start_handler(c: Client, m: Message):
         return
    user = UserSettings(m.from_user.id, m.from_user.first_name)
 
-    if m.from_user.id
         if user.allowed is False:
             res = await m.reply_text(
                 text=f"Hi **{m.from_user.first_name}**\n\n 🛡️ Unfortunately you can't use me\n\n**Contact: 🈲 @i_manjot_sidhu** ",
