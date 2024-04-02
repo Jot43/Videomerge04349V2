@@ -200,10 +200,12 @@ async def start_handler(c: Client, m: Message):
    Fsub = await ForceSub(c, m)
    if Fsub == 400:
         return
-   if m.from_user.id != int(Config.OWNER):
+   user = UserSettings(m.from_user.id, m.from_user.first_name)
+
+    if m.from_user.id != int(Config.OWNER):
         if user.allowed is False:
             res = await m.reply_text(
-                text=f"Hi **{m.from_user.first_name}**\n\n 🛡️ Unfortunately you can't use me\n\n**Contact: 🈲 @{Config.OWNER_USERNAME}** ",
+                text=f"Hi **{m.from_user.first_name}**\n\n 🛡️ Unfortunately you can't use me\n\n**Contact: 🈲 @i_manjot_sidhu** ",
                 quote=True,
             )
             return
@@ -211,7 +213,7 @@ async def start_handler(c: Client, m: Message):
         user.allowed = True
         user.set()
     res = await m.reply_text(
-        text=f"Hi **{m.from_user.first_name}**\n\n ⚡ I am a file/video merger bot\n\n😎 I can merge Telegram files!, And upload it to telegram\n\n**Owner: 🈲 @{Config.OWNER_USERNAME}** ",
+        text=f"Hi **{m.from_user.first_name}**\n\n ⚡ I am a file/video merger bot\n\n😎 I can merge Telegram files!, And upload it to telegram\n\n**Owner: 🈲 @i_manjot_sidhu** ",
         quote=True,
     )
     del user
