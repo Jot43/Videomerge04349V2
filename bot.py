@@ -200,14 +200,21 @@ async def start_handler(c: Client, m: Message):
    Fsub = await ForceSub(c, m)
    if Fsub == 400:
         return
-   await m.reply_text(
-        text=f"Hɪ **⚡ I ᴀᴍ ᴀ ғɪʟᴇ/ᴠɪᴅᴇᴏ ᴍᴇʀɢᴇʀ ʙᴏᴛ\n\n😎 I ᴄᴀɴ ᴍᴇʀɢᴇ ᴛᴇʟᴇɢʀᴀᴍ ғɪʟᴇs!, ᴀɴᴅ ᴜᴘʟᴏᴀᴅ ɪᴛ ᴛᴏ ᴛᴇʟᴇɢʀᴀᴍ Bot Owner @i_manjot_sidhu\n\n/help ғᴏʀ ʜᴏᴡ ᴛᴏ ᴜsᴇ\n\n**Oᴡɴᴇʀ: 🈲 @{Config.OWNER_USERNAME}**",
+   if m.from_user.id != int(Config.OWNER):
+        if user.allowed is False:
+            res = await m.reply_text(
+                text=f"Hi **{m.from_user.first_name}**\n\n 🛡️ Unfortunately you can't use me\n\n**Contact: 🈲 @{Config.OWNER_USERNAME}** ",
+                quote=True,
+            )
+            return
+    else:
+        user.allowed = True
+        user.set()
+    res = await m.reply_text(
+        text=f"Hi **{m.from_user.first_name}**\n\n ⚡ I am a file/video merger bot\n\n😎 I can merge Telegram files!, And upload it to telegram\n\n**Owner: 🈲 @{Config.OWNER_USERNAME}** ",
         quote=True,
-        reply_markup=InlineKeyboardMarkup(
-            [[InlineKeyboardButton("Cʟᴏsᴇ 🔐", callback_data="close")]]
-        ),
     )
-
+    del user
 
 
 @mergeApp.on_message(
