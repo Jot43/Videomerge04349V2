@@ -93,7 +93,6 @@ async def loginHandler(c: Client, m: Message):
         return
     user = UserSettings(m.from_user.id, m.from_user.first_name)
     if user.banned:
-        aw if user.banned:
         await m.reply_text(text=f"**Bᴀɴɴᴇᴅ ᴜsᴇʀ ᴅᴇᴛᴇᴄᴛᴇᴅ!**\n  Message Here For Login Key @i_manjot_sidhu\n\nCᴏɴᴛᴀᴄᴛ: 🈲 @{Config.OWNER_USERNAME}", quote=True)
         return
     if user.user_id == int(Config.OWNER):
