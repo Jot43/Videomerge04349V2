@@ -207,11 +207,9 @@ async def start_handler(c: Client, m: Message):
         ),
    )
 	
-@mergeApp.on(events.callbackquery.CallbackQuery(data="restart"))
-async def res(event):
-    if not f'{event.sender_id}' == f'{config(AUTH_USERS)}':
-        return await event.edit("Only authorized user can restart!")
-    result = await heroku_restart()
+@mergeApp.on_message(filters.command(["restart"]) & filters.user(Config.OWNER_USERNAME))
+async def sendLogFile(c: Client, m: Message):
+await heroku_restart()
     if result is None:
         await event.edit("You have not filled HEROKU_API and HEROKU_APP_NAME vars.")
     elif result is False:
