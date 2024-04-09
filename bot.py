@@ -195,21 +195,17 @@ async def broadcast_handler(c: Client, m: Message):
         + f"**Fᴀɪʟᴇᴅ: {str(len-success)}**\n\n__🤓 Bʀᴏᴀᴅᴄᴀsᴛ ᴄᴏᴍᴘʟᴇᴛᴇᴅ sᴜᴄᴇssғᴜʟʟʏ__",
     )
 	
-@mergeApp.on_message(filters.command(["start"]) & filters.private)
 async def start_handler(c: Client, m: Message):
    Fsub = await ForceSub(c, m)
    if Fsub == 400:
         return
-   user = UserSettings(m.from_user.id, m.from_user.first_name)
-       
-        user.allowed = True
-        user.set()
-    res = await m.reply_text(
-        text=f"Hi **{m.from_user.first_name}**\n\n ⚡ I am a file/video merger bot\n\n😎 I can merge Telegram files!, And upload it to telegram\n\n**Owner: 🈲 @i_manjot_sidhu** ",
+   await m.reply_text(
+        text=f"Hɪ **⚡ I ᴀᴍ ᴀ ғɪʟᴇ/ᴠɪᴅᴇᴏ ᴍᴇʀɢᴇʀ ʙᴏᴛ\n\n😎 I ᴄᴀɴ ᴍᴇʀɢᴇ ᴛᴇʟᴇɢʀᴀᴍ ғɪʟᴇs!, ᴀɴᴅ ᴜᴘʟᴏᴀᴅ ɪᴛ ᴛᴏ ᴛᴇʟᴇɢʀᴀᴍ Bot Owner @DevilServers\n\n/help ғᴏʀ ʜᴏᴡ ᴛᴏ ᴜsᴇ\n\n**Oᴡɴᴇʀ: 🈲 @{Config.OWNER_USERNAME}**",
         quote=True,
-    )
-    del user
-
+        reply_markup=InlineKeyboardMarkup(
+            [[InlineKeyboardButton("Cʟᴏsᴇ 🔐", callback_data="close")]]
+        ),
+   )
 
 @mergeApp.on_message(
     (filters.document | filters.video | filters.audio) & filters.private
