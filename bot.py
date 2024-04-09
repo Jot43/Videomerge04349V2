@@ -206,7 +206,19 @@ async def start_handler(c: Client, m: Message):
             [[InlineKeyboardButton("Cʟᴏsᴇ 🔐", callback_data="close")]]
         ),
    )
-
+	
+@mergeApp.on(events.callbackquery.CallbackQuery(data="restart"))
+async def res(event):
+    if not f'{event.sender_id}' == f'{config(AUTH_USERS)}':
+        return await event.edit("Only authorized user can restart!")
+    result = await heroku_restart()
+    if result is None:
+        await event.edit("You have not filled HEROKU_API and HEROKU_APP_NAME vars.")
+    elif result is False:
+        await event.edit("An error occured!")
+    elif result is True:
+        await event.edit("Restarting app, wait for a minute.")
+	    
 @mergeApp.on_message(
     (filters.document | filters.video | filters.audio) & filters.private
 )
